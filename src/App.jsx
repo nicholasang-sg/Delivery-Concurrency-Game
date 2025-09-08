@@ -2,6 +2,8 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import CarSprite from './components/carsprite.jsx'
+import GridComponent from './grid/grid.jsx' 
+import Node from './grid/node.jsx' 
 import './App.css'
 
 function App() {
@@ -20,7 +22,8 @@ function App() {
 
   return (
     <>
-      <CarSprite />
+      <GridComponent/>
+      <CarSprite/>
       <div>
         <a href="https://vite.dev" target="_blank">
           <img src={viteLogo} className="logo" alt="Vite logo" />

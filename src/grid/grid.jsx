@@ -1,26 +1,41 @@
-import React, { useState, useEffect } from 'react';
-import Node from 'grid.jsx'
+import {useState, useEffect} from 'react';
+import Node from './node.jsx';
 
 const GRID_ROW_LENGTH = 10;
 const GRID_COL_LENGTH = 10;
 
 const createGrid = () => {
-    const grid = [];
-    for (let row = 0; row < GRID_ROW_LENGTH; row++){
-        const currentRow = []
-        for (let col = 0; col < GRID_COL_LENGTH; col++){
-            currentRow.push(Node(row, col));
+    let grid = [];
+    for (let i = 0; i < GRID_ROW_LENGTH; i++){
+        let row = []
+        for (let j = 0; j < GRID_COL_LENGTH; j++){
+            row.push(<Node/>)
         }
-        grid.push(currentRow);
+        grid.push(row);
     }
     return grid;
-};
+}
+
 
 const GridComponent = () => {
     const [grid, setGrid] = useState([]);
 
     useEffect(() => {
-        const initialGrid = createGrid();
-        setGrid(initialGrid);
-    }, []);
-}
+        const newGrid = createGrid()
+        setGrid(newGrid);
+    }, [])
+
+    return(
+        <>
+            {grid.map((row, rowIndex) => (
+                <div key={rowIndex} style={{ display: 'flex' }}>
+                    {row.map((node, colIndex) => (
+                    <div key={colIndex}>{node}</div>
+                    ))}
+                </div>
+            ))}
+        </>
+    );
+};
+
+export default GridComponent;
