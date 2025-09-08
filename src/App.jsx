@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
+import CarSprite from './components/carsprite.jsx'
 import './App.css'
 
 function App() {
@@ -8,12 +9,18 @@ function App() {
   createModule().then((Module) => {
     const result = Module._add(1, 2);
     console.log("WASM result:", result);
+
+    const counter = new Module.Counter();
+    counter.inc();
+    counter.inc();
+    console.log("Counter value:", counter.get()); 
   });
 
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
 
   return (
     <>
+      <CarSprite />
       <div>
         <a href="https://vite.dev" target="_blank">
           <img src={viteLogo} className="logo" alt="Vite logo" />
