@@ -2,8 +2,8 @@ const Node = ({ row, col }) => {
   return (
     <div
       style={{
-        width: '30px',
-        height: '30px',
+        width: '3.5rem',
+        height: '3.5rem',
         backgroundColor: 'white',
         color: 'black',
         border: '1px solid black',

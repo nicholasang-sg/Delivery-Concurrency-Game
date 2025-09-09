@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Stage, Layer, Sprite } from 'react-konva';
-import Konva from 'konva';
 import redCarSprite from '../assets/RedCarsSpritesheet.png';
 
 function CarSprite() {
