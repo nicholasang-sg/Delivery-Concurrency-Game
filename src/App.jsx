@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import CarSprite from './components/carsprite.jsx'
@@ -6,17 +6,38 @@ import GridComponent from './grid/grid.jsx'
 import Node from './grid/node.jsx' 
 import './App.css'
 
+import Module from './c++ logic/sim.js';
+
+
 function App() {
 
-  createModule().then((Module) => {
-    const result = Module._add(1, 2);
-    console.log("WASM result:", result);
+  useEffect(() => {
+    Module().then((Module) => {
+      const result = Module._add(1, 2);
+      console.log("WASM result:", result);
 
-    const counter = new Module.Counter();
-    counter.inc();
-    counter.inc();
-    console.log("Counter value:", counter.get()); 
-  });
+      const counter = new Module.Counter();
+      counter.inc();
+      counter.inc();
+      console.log("Counter value:", counter.get()); 
+
+      const grid = new Module.Grid(10, 10);
+
+      console.log("grid: ", grid);
+
+      for(let x=0; x<=7; x++) grid.setRoad(x, 0, true);
+      for(let y=0; y<=8; y++) grid.setRoad(7, y, true);
+
+      const path = Module.findPath(grid, 0, 0, 7, 8);
+
+      console.log("Path length:", path.size());
+      for(let i=0; i < path.size(); i++) {
+        const node = path.get(i);
+        console.log(`Node ${i}: x=${node.first}, y=${node.second}`);
+      }
+    });
+  }, []);
+
 
   const [count, setCount] = useState(0);
 

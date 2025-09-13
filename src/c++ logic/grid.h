@@ -7,6 +7,7 @@ enum CellType {
 };
 
 struct GridCell {
+    int x, y;
     CellType type = EMPTY;
     bool occupied = false; // If a car is currently here
     float speedModifier = 1.0f; // Used to slow down cars dynamically
@@ -18,7 +19,15 @@ public:
     int height;
     std::vector<GridCell> cells;
 
-    Grid(int w, int h) : width(w), height(h), cells(w * h) {}
+    Grid(int w, int h) : width(w), height(h), cells(w * h) {
+        for (int y = 0; y < height; ++y) {
+            for (int x = 0; x < width; ++x) {
+                GridCell& cell = cells[y * width + x];
+                cell.x = x;
+                cell.y = y;
+            }
+        }
+    }
 
     GridCell& getCell(int x, int y) {
         return cells[y * width + x];

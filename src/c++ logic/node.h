@@ -7,9 +7,16 @@ struct Node {
     float totalCost() const { return cost + heuristic; }
 };
 
-// Priority queue comparison
 struct CompareNode {
     bool operator()(Node* a, Node* b) {
         return a->totalCost() > b->totalCost();
     }
 };
+
+Node* getParent(Node& node) {
+    return node.parent;
+}
+
+void setParent(Node& node, Node* p) {
+    node.parent = p;
+}
