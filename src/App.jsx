@@ -20,21 +20,6 @@ function App() {
       counter.inc();
       counter.inc();
       console.log("Counter value:", counter.get()); 
-
-      const grid = new Module.Grid(10, 10);
-
-      console.log("grid: ", grid);
-
-      for(let x=0; x<=7; x++) grid.setRoad(x, 0, true);
-      for(let y=0; y<=8; y++) grid.setRoad(7, y, true);
-
-      const path = Module.findPath(grid, 0, 0, 7, 8);
-
-      console.log("Path length:", path.size());
-      for(let i=0; i < path.size(); i++) {
-        const node = path.get(i);
-        console.log(`Node ${i}: x=${node.first}, y=${node.second}`);
-      }
     });
   }, []);
 
