@@ -9,8 +9,8 @@ const GRID_COL_LENGTH = 20;
 const GridComponent = () => {
     const [grid, setGrid] = useState([]);
     const [clickedRoad, setClickedRoad] = useState([-1, -1]);
-    const ModuleRef = useRef(null);     // Store the loaded Module here
-    const logicGridRef = useRef(null); // Store the Grid instance here
+    const ModuleRef = useRef(null);
+    const logicGridRef = useRef(null); 
 
     // Passed to Node(s) inside grid, for onClick to set & unset road status
     function handleClick({row, col}) {
@@ -18,17 +18,28 @@ const GridComponent = () => {
     }
 
     // Creates the grid, filled with Node from node.jsx
-    function createGrid() {
+    function createGrid(path=null) {
 
         let grid = [];
         for (let i = 0; i < GRID_ROW_LENGTH; i++){
             let row = [];
             for (let j = 0; j < GRID_COL_LENGTH; j++){
-                row.push(<Node row={i} col={j} handleClick={handleClick} logicGridRef={logicGridRef}/>)
+                const pathFound = path ? path.some(p => p[0] === i && p[1] === j) : false;
+                row.push(<Node row={i} col={j} handleClick={handleClick} logicGridRef={logicGridRef} pathFound={pathFound}/>)
             }
             grid.push(row);
         }
         return grid;
+    }
+
+    // Converts c++ array to js array
+    function vectorToArray(vector) {
+    const result = [];
+    const len = vector.size();
+    for (let i = 0; i < len; i++) {
+        result.push(vector.get(i)); // Each element is probably a pair like [x, y]
+    }
+    return result;
     }
 
     // Initialize ModuleRef and logicGridRef
@@ -51,18 +62,18 @@ const GridComponent = () => {
                 const clickedX = clickedRoad[0];
                 const clickedY = clickedRoad[1];
                 logicGrid.setRoad(clickedX, clickedY, !logicGrid.isRoad(clickedX, clickedY))
-                console.log(clickedRoad, " status:", logicGrid.isRoad(clickedX, clickedY))
             }
 
-            const path = Module.findPath(logicGrid, 0, 0, 1, 1);
+            const rawPath = Module.findPath(logicGrid, 0, 0, 6, 8);
+            const path = vectorToArray(rawPath);
 
-            console.log("Path length:", path.size());
-            for(let i=0; i < path.size(); i++) {
-                const node = path.get(i);
+            console.log("Path:", rawPath);
+            for(let i=0; i < rawPath.size(); i++) {
+                const node = rawPath.get(i);
                 console.log(`Node ${i}: x=${node[0]}, y=${node[1]}`);
             };
 
-            setGrid(createGrid());
+            setGrid(createGrid(path));
     }, [clickedRoad])
 
     return(
