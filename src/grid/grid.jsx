@@ -1,10 +1,10 @@
 import {useState, useEffect, useRef} from 'react';
 import Node from './node.jsx';
 import Module from '../c++ logic/sim.js';
+import Car from '../cars/car.jsx'
 
 const GRID_ROW_LENGTH = 10;
 const GRID_COL_LENGTH = 20;
-
 
 const GridComponent = () => {
     const [grid, setGrid] = useState([]);
@@ -33,13 +33,13 @@ const GridComponent = () => {
     }
 
     // Converts c++ array to js array
-    function vectorToArray(vector) {
-    const result = [];
-    const len = vector.size();
-    for (let i = 0; i < len; i++) {
-        result.push(vector.get(i)); // Each element is probably a pair like [x, y]
-    }
-    return result;
+        function vectorToArray(vector) {
+        const result = [];
+        const len = vector.size();
+        for (let i = 0; i < len; i++) {
+            result.push(vector.get(i));
+        }
+        return result;
     }
 
     // Initialize ModuleRef and logicGridRef
@@ -78,6 +78,7 @@ const GridComponent = () => {
 
     return(
         <>
+            <Car/>
             {grid.map((row, rowIndex) => (
                 <div key={rowIndex} style={{ display: 'flex', justifyContent: 'center'}}>
                     {row.map((node, colIndex) => (
