@@ -1,48 +1,69 @@
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useRef} from 'react';
 import Node from './node.jsx';
 import Module from '../c++ logic/sim.js';
 
 const GRID_ROW_LENGTH = 10;
 const GRID_COL_LENGTH = 20;
 
-function createGrid() {
-
-    let grid = [];
-    for (let i = 0; i < GRID_ROW_LENGTH; i++){
-        let row = []
-        for (let j = 0; j < GRID_COL_LENGTH; j++){
-            row.push(<Node row={i} col={j}/>)
-        }
-        grid.push(row);
-    }
-    return grid;
-}
-
 
 const GridComponent = () => {
     const [grid, setGrid] = useState([]);
+    const [clickedRoad, setClickedRoad] = useState([-1, -1]);
+    const ModuleRef = useRef(null);     // Store the loaded Module here
+    const logicGridRef = useRef(null); // Store the Grid instance here
 
+    // Passed to Node(s) inside grid, for onClick to set & unset road status
+    function handleClick({row, col}) {
+        setClickedRoad([row, col]) 
+    }
+
+    // Creates the grid, filled with Node from node.jsx
+    function createGrid() {
+
+        let grid = [];
+        for (let i = 0; i < GRID_ROW_LENGTH; i++){
+            let row = [];
+            for (let j = 0; j < GRID_COL_LENGTH; j++){
+                row.push(<Node row={i} col={j} handleClick={handleClick} logicGridRef={logicGridRef}/>)
+            }
+            grid.push(row);
+        }
+        return grid;
+    }
+
+    // Initialize ModuleRef and logicGridRef
     useEffect(() => {
         Module().then((Module) => {
-            const grid = new Module.Grid(10, 10);
+            ModuleRef.current = Module;
+            logicGridRef.current = new Module.Grid(GRID_ROW_LENGTH, GRID_COL_LENGTH);
+            setGrid(createGrid());
+        });
+    }, [])
 
-            console.log("grid: ", grid);
+    // Update visual grid and logic grid
+    useEffect(() => {
+            if (!logicGridRef.current || !ModuleRef.current) return;
+            const Module = ModuleRef.current; 
 
-            for(let x=0; x<=7; x++) grid.setRoad(x, 0, true);
-            for(let y=0; y<=8; y++) grid.setRoad(7, y, true);
+            const logicGrid = logicGridRef.current
 
-            const path = Module.findPath(grid, 0, 0, 7, 8);
+            if (clickedRoad[0] !== -1 && clickedRoad[1] !== -1){
+                const clickedX = clickedRoad[0];
+                const clickedY = clickedRoad[1];
+                logicGrid.setRoad(clickedX, clickedY, !logicGrid.isRoad(clickedX, clickedY))
+                console.log(clickedRoad, " status:", logicGrid.isRoad(clickedX, clickedY))
+            }
+
+            const path = Module.findPath(logicGrid, 0, 0, 1, 1);
 
             console.log("Path length:", path.size());
             for(let i=0; i < path.size(); i++) {
                 const node = path.get(i);
                 console.log(`Node ${i}: x=${node[0]}, y=${node[1]}`);
-            }
-        });
+            };
 
-        const newGrid = createGrid()
-        setGrid(newGrid);
-    }, [])
+            setGrid(createGrid());
+    }, [clickedRoad])
 
     return(
         <>
