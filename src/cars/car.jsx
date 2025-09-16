@@ -1,8 +1,5 @@
-import {useState} from 'react'
-
-const Car = () => {
-
-    const [cars, setCars] = useState([{ id: 1, x: 0, y: 0 }]);
+// car.jsx
+const Car = ({cars, setCars}) => {
 
     return (
     <div>
@@ -12,16 +9,18 @@ const Car = () => {
             style={{
             width: "3rem",
             backgroundColor: 'red',
+            boxSizing: 'border-box',
             position: 'absolute',
-            left: `${car.x + 2.3}rem`,
-            top: `${car.y + 3}rem`,
+            left: `${car.x + 0.25}rem`,
+            top: `${car.y + 1}rem`,
             border: '1px solid black',
-            transition: 'left 0.3s ease, top 0.3s ease'
+            transition: 'left 0.3s ease, top 0.3s ease',
+            zIndex: '10'
             }}
             onClick={()=>{
-                setCars(prevCars =>
+                setCars((prevCars) =>
                     prevCars.map(c =>
-                    c.id === car.id ? { ...c, x: c.x + 1 } : c
+                    c.id === car.id ? { ...c, x: c.x + 3.5, y: c.y + 3.5 } : c
                     )
                 );
             }}

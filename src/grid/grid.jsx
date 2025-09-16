@@ -5,12 +5,14 @@ import Car from '../cars/car.jsx'
 
 const GRID_ROW_LENGTH = 10;
 const GRID_COL_LENGTH = 20;
+const CELL_SIZE_REM = 3.5;
 
 const GridComponent = () => {
     const [grid, setGrid] = useState([]);
     const [clickedRoad, setClickedRoad] = useState([-1, -1]);
     const ModuleRef = useRef(null);
     const logicGridRef = useRef(null); 
+    const [cars, setCars] = useState([{ id: 1, x: 0, y: 0 }]);
 
     // Passed to Node(s) inside grid, for onClick to set & unset road status
     function handleClick({row, col}) {
@@ -47,8 +49,8 @@ const GridComponent = () => {
         Module().then((Module) => {
             ModuleRef.current = Module;
             logicGridRef.current = new Module.Grid(GRID_ROW_LENGTH, GRID_COL_LENGTH);
-            setGrid(createGrid());
         });
+        setGrid(createGrid());
     }, [])
 
     // Update visual grid and logic grid
@@ -77,16 +79,22 @@ const GridComponent = () => {
     }, [clickedRoad])
 
     return(
-        <>
-            <Car/>
+        <div style={{
+            position: 'relative', // container for absolute positioning of cars
+            width: `${GRID_COL_LENGTH * CELL_SIZE_REM}rem`,
+            height: `${GRID_ROW_LENGTH * CELL_SIZE_REM}rem`,
+            display: 'flex',
+            flexDirection: 'column',
+        }}>
+            <Car cars={cars} setCars={setCars}/>
             {grid.map((row, rowIndex) => (
-                <div key={rowIndex} style={{ display: 'flex', justifyContent: 'center'}}>
+                <div key={rowIndex} style={{display: 'flex'}}>
                     {row.map((node, colIndex) => (
-                    <div key={`${rowIndex}:${colIndex}`}>{node}</div>
+                    <div id={`${rowIndex}:${colIndex}`} key={`${rowIndex}:${colIndex}`}>{node}</div>
                     ))}
                 </div>
             ))}
-        </>
+        </div>
     );
 };
 

@@ -12,6 +12,7 @@ const Node = ({ row, col, handleClick, logicGridRef, pathFound }) => {
         height: '3.5rem',
         backgroundColor: backgroundColor,
         color: 'black',
+        boxSizing: 'border-box',
         border: '1px solid black',
         display: 'flex',
         justifyContent: 'center',
