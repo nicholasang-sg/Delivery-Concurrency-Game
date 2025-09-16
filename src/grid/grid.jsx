@@ -12,7 +12,7 @@ const GridComponent = () => {
     const [clickedRoad, setClickedRoad] = useState([-1, -1]);
     const ModuleRef = useRef(null);
     const logicGridRef = useRef(null); 
-    const [cars, setCars] = useState([{ id: 1, x: 0, y: 0 }]);
+    const [cars, setCars] = useState([{ id: 1, nodeX: 0, nodeY: 0, x: 0, y: 0 , path: null, finalPos: false}]);
 
     // Passed to Node(s) inside grid, for onClick to set & unset road status
     function handleClick({row, col}) {
@@ -35,13 +35,54 @@ const GridComponent = () => {
     }
 
     // Converts c++ array to js array
-        function vectorToArray(vector) {
+    function vectorToArray(vector) {
         const result = [];
         const len = vector.size();
         for (let i = 0; i < len; i++) {
             result.push(vector.get(i));
         }
         return result;
+    }
+
+    // Sets the new position of car after each pathNode when pathFound
+
+    async function moveCarAlongPath(car) {
+        for (const pathNode of car.path) {
+            while (car.nodeX !== pathNode[1]) {
+                const step = car.nodeX < pathNode[1] ? 1 : -1;
+                await new Promise(resolve => {
+                    setCars(prevCars =>
+                        prevCars.map(c =>
+                            c.id === car.id
+                            ? { ...c, x: c.x + step * 3.5, nodeX: c.nodeX + step }
+                            : c
+                        )
+                    );
+                    setTimeout(resolve, 300);
+                });
+                car.nodeX += step;
+            }
+            while (car.nodeY !== pathNode[0]) {
+                const step = car.nodeY < pathNode[0] ? 1 : -1;
+                await new Promise(resolve => {
+                    setCars(prevCars =>
+                        prevCars.map(c =>
+                            c.id === car.id
+                            ? { ...c, y: c.y + step * 3.5, nodeY: c.nodeY + step }
+                            : c
+                        )
+                    );
+                    setTimeout(resolve, 300);
+                });
+                car.nodeY += step;
+            }
+        }
+
+        setCars(prevCars =>
+            prevCars.map(c =>
+            c.id === car.id ? { ...c, path: null, finalPos: true } : c
+            )
+        );
     }
 
     // Initialize ModuleRef and logicGridRef
@@ -69,18 +110,29 @@ const GridComponent = () => {
             const rawPath = Module.findPath(logicGrid, 0, 0, 6, 8);
             const path = vectorToArray(rawPath);
 
-            console.log("Path:", rawPath);
-            for(let i=0; i < rawPath.size(); i++) {
-                const node = rawPath.get(i);
-                console.log(`Node ${i}: x=${node[0]}, y=${node[1]}`);
-            };
-
             setGrid(createGrid(path));
+
+            if (path.length !== 0){
+                setCars((prevCars) =>
+                    prevCars.map(c => 
+                    ({...c, path: path})
+                    )
+                )
+            }
     }, [clickedRoad])
+
+    // Initialize car movement if path is found
+    useEffect(() => {
+    for (let car of cars) {
+        if (car.path !== null && !car.finalPos) {
+        moveCarAlongPath(car);
+        }
+    }
+    }, [grid]);
 
     return(
         <div style={{
-            position: 'relative', // container for absolute positioning of cars
+            position: 'relative',
             width: `${GRID_COL_LENGTH * CELL_SIZE_REM}rem`,
             height: `${GRID_ROW_LENGTH * CELL_SIZE_REM}rem`,
             display: 'flex',
