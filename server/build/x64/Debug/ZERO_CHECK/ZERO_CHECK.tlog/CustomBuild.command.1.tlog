@@ -1,0 +1,10 @@
+^C:\USERS\NICHO\PROJECTS\DELIVERY\DELIVERY CONCURRENCY\SERVER\BUILD\CMAKEFILES\C92713BCDE74CCC475A6105361E0CBE9\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" "-SC:/Users/nicho/Projects/Delivery/Delivery Concurrency/server" "-BC:/Users/nicho/Projects/Delivery/Delivery Concurrency/server/build" --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file "C:/Users/nicho/Projects/Delivery/Delivery Concurrency/server/build/DeliveryConcurrencyServer.sln"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
