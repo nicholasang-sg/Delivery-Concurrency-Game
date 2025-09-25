@@ -14,7 +14,7 @@ const Car = ({cars, setCars}) => {
             left: `${car.x + 0.25}rem`,
             top: `${car.y + 1}rem`,
             border: '1px solid black',
-            transition: 'left 0.3s ease, top 0.3s ease',
+            transition: 'left 0.3s linear, top 0.3s linear',
             zIndex: '10'
             }}
             onClick={()=>{

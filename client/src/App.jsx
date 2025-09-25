@@ -3,28 +3,13 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import CarSprite from './components/carsprite.jsx'
 import GridComponent from './grid/grid.jsx' 
-import Node from './grid/node.jsx' 
+import WebSocketComponent from './components/websockets.jsx' 
 import './App.css'
 
-import Module from './c++ logic/sim.js';
-
-
 function App() {
-
-  useEffect(() => {
-    Module().then((Module) => {
-      const result = Module._add(1, 2);
-      console.log("WASM result:", result);
-
-      const counter = new Module.Counter();
-      counter.inc();
-      counter.inc();
-      console.log("Counter value:", counter.get()); 
-    });
-  }, []);
-
-
   const [count, setCount] = useState(0);
+
+  WebSocketComponent()
 
   return (
     <>
